@@ -1,0 +1,6 @@
+@BikeRepairAI_HostAddress = http://localhost:5149
+
+GET {{BikeRepairAI_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
