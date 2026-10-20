@@ -22,7 +22,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy("AngularFrontend", policy =>
     {
         policy
-            .WithOrigins("http://localhost:4200")
+            .WithOrigins("http://localhost:4200", "https://bike-repair-ui.nileshpatil7476.workers.dev/")
             .AllowAnyHeader()
             .AllowAnyMethod();
     });
