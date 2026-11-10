@@ -9,10 +9,12 @@ namespace BikeRepairAI.Services;
 public class OpenAIService
 {
     private readonly IConfiguration _configuration;
+    private readonly HttpClient _httpClient;
 
-    public OpenAIService(IConfiguration config)
+    public OpenAIService(IConfiguration config, HttpClient httpClient)
     {
         _configuration = config;
+        _httpClient = httpClient;
     }
 
     // OpenAI embeddings
