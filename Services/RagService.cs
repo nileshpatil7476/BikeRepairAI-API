@@ -51,15 +51,18 @@ public partial class RagService
     }
 
     // Steps 1-4: Extract, chunk, embed, and store the PDF.
-    public async Task<int> IngestPdfAsync(
-        string filePath, string source)
+    public async Task<int> IngestPdfAsync(string filePath, string source)
     {
         var text = ExtractPdfText(filePath);
         var chunks = SplitIntoChunks(text);
 
+        // Remove any earlier version of this PDF
+        var old = _db.DocumentChunks.Where(x => x.Source == source);
+        _db.DocumentChunks.RemoveRange(old);
+
         foreach (var chunk in chunks)
         {
-            var embedding = await _openAI.GetEmbeddingAsync(chunk);
+            var embedding = await _openAI.GetEmbeddingAsync(chunk, isQuery: false);
 
             _db.DocumentChunks.Add(new DocumentChunk
             {
@@ -71,7 +74,6 @@ public partial class RagService
         }
 
         await _db.SaveChangesAsync();
-
         return chunks.Count;
     }
 
@@ -79,7 +81,7 @@ public partial class RagService
     public async Task<string> AskAsync(string question)
     {
         var questionVector =
-            await _openAI.GetEmbeddingAsync(question);
+            await _openAI.GetEmbeddingAsync(question, isQuery: true);
 
         var documents = await _db.DocumentChunks
             .AsNoTracking()
