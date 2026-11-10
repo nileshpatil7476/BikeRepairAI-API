@@ -26,7 +26,14 @@ public class ChatController : ControllerBase
 
         try
         {
+            _logger.LogInformation(
+                "Chat API request started.");
+
             var answer = await _rag.AskAsync(request.Question);
+
+            _logger.LogInformation(
+                "Chat API request completed successfully.");
+
             return Ok(new
             {
                 Question = request.Question,
@@ -35,14 +42,17 @@ public class ChatController : ControllerBase
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex,
-            "BikeRepairAI Chat API failed");
-
-            Console.Error.WriteLine(ex.ToString());
+            _logger.LogError(
+                ex,
+                "Error occurred in ChatController Ask method. Question: {Question}, TraceId: {TraceId}",
+                request.Question,
+                HttpContext.TraceIdentifier);
 
             return StatusCode(500, new
             {
-                Message = "Chat processing failed. Check server logs."
+                success = false,
+                message = "Something went wrong while processing your question.",
+                traceId = HttpContext.TraceIdentifier
             });
         }
     }

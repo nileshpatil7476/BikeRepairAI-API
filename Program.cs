@@ -1,10 +1,19 @@
 
 using BikeRepairAI.Data;
+using BikeRepairAI.Logging;
+using BikeRepairAI.Middleware;
 using BikeRepairAI.Services;
 using Microsoft.EntityFrameworkCore;
 using System.Net.Http.Headers;
 
 var builder = WebApplication.CreateBuilder(args);
+
+var logDirectory = Path.Combine(
+    builder.Environment.ContentRootPath,
+    "logs");
+
+builder.Logging.AddProvider(
+    new CustomFileLoggerProvider(logDirectory));
 
 builder.Services.AddControllers();
 builder.Services.AddOpenApi();
@@ -59,6 +68,8 @@ builder.Services.AddCors(options =>
 });
 
 var app = builder.Build();
+
+app.UseMiddleware<GlobalExceptionMiddleware>();
 
 if (app.Environment.IsDevelopment())
 {

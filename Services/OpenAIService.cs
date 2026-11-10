@@ -8,17 +8,10 @@ namespace BikeRepairAI.Services;
 
 public class OpenAIService
 {
-    private readonly HttpClient _httpClient;
     private readonly IConfiguration _configuration;
 
-    private string ApiKey =>
-        _configuration["HuggingFace:ApiKey"]
-        ?? throw new InvalidOperationException(
-            "Hugging Face API key is missing.");
-
-    public OpenAIService(IHttpClientFactory factory, IConfiguration config)
+    public OpenAIService(IConfiguration config)
     {
-        _httpClient = factory.CreateClient("HuggingFace");
         _configuration = config;
     }
 
