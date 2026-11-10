@@ -74,6 +74,13 @@ app.UseAuthorization();
 app.UseSwagger();
 app.UseSwaggerUI();
 
+app.MapGet("/", () => Results.Ok(new
+{
+    Application = "BikeRepairAI",
+    Status = "Running",
+    Message = "BikeRepairAI API is working!"
+}));
+
 app.MapControllers();
 
 app.Run();
